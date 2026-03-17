@@ -1,5 +1,7 @@
 include <BOSL2/std.scad>
 
+// * Frame
+//
 // : <---------        36          --------->
 // : +--------------------------------------+
 // : |                                      |
@@ -22,8 +24,8 @@ include <BOSL2/std.scad>
 // : |    +----------------------------+    | <|
 // : |                                      |
 // : +--------------------------------------+
-//
-// 下をけずる
+// + 厚さは，6mm
+// + フレームの下をけずる:
 // :                   29
 // :     .------------------------------.    <|
 // :    .                                .    |
@@ -65,28 +67,33 @@ module frame() {
     w/2/tan(angle/2) - sqrt( (d/2)^2 - (w/2)^2 );
 
   difference() {
+    // フレーム外形
     cuboid(fs, rounding=R, edges=TOP) {
-      up(fs.z/2) // シリンダの中心をフレームの上辺へ
+      up(fs.z/2) // シャフトが通る軸受の中心をフレームの上辺へ持ち上げる
+        // シャフトが通る軸受の外形
         ycyl(d=shaft_D+shaft_T*2, h=fs.y, center=true);
     }
 
-    // シャフトが入るように中を抜く
+    // シャフトが入るように軸受の中を抜く
     up(fs.z/2)  // シャフトの中心をフレームの上辺へ
       ycyl(d=shaft_D, h=fs.y + e, center=true);
 
-    // スイッチが入るように中を抜く．上下を X だけ増して確実に．
+    // スイッチが入るようにフレーム外形の中を抜く．上下を X だけ増して確実に．
     cuboid(ss+[0,0,X]);
 
-    // 手前ベゼルの下を削る
+    // フレーム下側を削って受かせる
     translate([0, -(fs.y-bezel)/2, -((fs.z-shave.z)/2+e)])
       cuboid(shave);
 
-    // 奥側軸受を pie_slice で削る
+    // 軸受の一方(奥)を pie_slice で削って切り掛きを入れる
     translate([0, (fs.y-bezel)/2, fs.z/2-delta()])
       pie_slice(ang=70, r=X, l=X, anchor=CENTER, orient=FRONT, spin=90-35);
   }
 }
 
+// * Panel
+//   フレームに乗るパネル部分
+//
 module panel(anchor=CENTER, spin=0, orient=UP) {
   fs      = FRAME;          // フレームの外形
   hs      = PANEL_HORN;     // ホーンの外形
@@ -116,7 +123,7 @@ module panel(anchor=CENTER, spin=0, orient=UP) {
         cuboid(ps);
       }
       // シャフトの直径がパネルの厚さより大きい場合のために
-      // パネル上面に出ているシャフトをを削る
+      // パネル上面に出ているシャフトを削る
       up(ps.z) cuboid(ps+[0,X,0+e]);
     }
     children();
