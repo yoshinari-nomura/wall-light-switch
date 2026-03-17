@@ -71,12 +71,12 @@ module frame() {
     cuboid(fs, rounding=R, edges=TOP) {
       up(fs.z/2) // シャフトが通る軸受の中心をフレームの上辺へ持ち上げる
         // シャフトが通る軸受の外形
-        ycyl(d=shaft_D+shaft_T*2, h=fs.y, center=true);
+        ycyl(d=shaft_D+shaft_T*2, h=fs.y);
     }
 
     // シャフトが入るように軸受の中を抜く
     up(fs.z/2)  // シャフトの中心をフレームの上辺へ
-      ycyl(d=shaft_D, h=fs.y + e, center=true);
+      ycyl(d=shaft_D, h=fs.y + e);
 
     // スイッチが入るようにフレーム外形の中を抜く．上下を X だけ増して確実に．
     cuboid(ss+[0,0,X]);
@@ -117,7 +117,7 @@ module panel(anchor=CENTER, spin=0, orient=UP) {
         }
         // シャフト
         up((shaft_D - ps.z)/2) back((shaft_L - fs.y)/2)
-          ycyl(d=shaft_D, h=shaft_L, center=true);
+          ycyl(d=shaft_D, h=shaft_L);
 
         // パネル
         cuboid(ps);
